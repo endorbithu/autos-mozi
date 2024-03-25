@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    container_name: autosmozi
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./laravel-app:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - external
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    user: www-data:www-data
+    environment:
+      - APP_ENV=${APP_ENV}  # Set Laravel environment (e.g., local, production)
+      - APP_DEBUG=${APP_DEBUG}
+      - DB_HOST=${DATABASE_HOST}
+      - DB_PORT=${MYSQL_EXTERNAL_PORT}
+      - DB_USERNAME=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_DATABASE=${MYSQL_DB_NAME}
+    volumes:
+      - ./laravel-app:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - internal
+      - external
+
+  composer:
+    image: composer:latest
+    command: ["composer", "install", "--no-interaction"]
+    container_name: composer
+    volumes:
+      - ./laravel-app:/app
+    depends_on:
+      - app
+
+  node:
+    image: node:latest
+    working_dir: /app
+    container_name: node
+    command:
+      - /bin/sh
+      - -c
+      - |
+        npm i
+        npm run build
+    volumes:
+      - ./laravel-app:/app
+    depends_on:
+      - app
+
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    container_name: db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DB_NAME}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - internal
+    volumes:
+      - db-data:/var/lib/mysql
+
+networks:
+  external:
+    driver: bridge
+  internal:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
