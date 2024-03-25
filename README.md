@@ -28,7 +28,7 @@ Lépések:
 - `docker-compose up -d --build` (meg kell várni amíg a háttérben lefut a composer és a node container)
 - hosts fájlba: `127.0.0.1 autosmozi`
 - Laravel containerben (`docker exec -it app bash`)
-    - `cd /html`
+    - `cd ~/html`
     - `php artisan migrate`
     - `php artisan db:seed`
 - URL: http://autosmozi
