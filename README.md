@@ -61,14 +61,6 @@ Lépések:
     - `routes/api.php` -ban  `Route::resource('movie', \App\Http\Controllers\MovieController::class);` elkészíti a REST
       route-okat és hozzákapcsolja a `MovieController`-hez.
 
-#### API Teszt
-
-- Feature teszt (HTTP requestekkel), végigviszi az összes REST műveletet mind a két entitásnál (SQLite in memory
-  DB-t használva, hogy az adatbázis integritása ne sérüljön)
-- `tests/Feature/RESTApi.php` -ből származtatott test classoknál csak az örökölt property-ket kell megfelelően kitölteni
-  az egyes entitások adataival, és a `Feature/RESTApi` az adatok alapján teljeskörűen teszteli az egyes entitásokat.
-- Futtatás: `php artisan test`
-
 #### Frontend (React Js)
 
 `URL/movies`  
@@ -76,6 +68,14 @@ Lépések:
 
 Végpontokon lévő HTML oldalakon az entitások elemeit (lista 1. oldalát) betölti az oldalakon lévő táblázatba (lapozás
 nem készült el).
+
+#### API Teszt
+
+- Feature teszt (HTTP requestekkel), végigviszi az összes REST műveletet mind a két entitásnál (SQLite in memory
+  DB-t használva, hogy az adatbázis integritása ne sérüljön)
+- `tests/Feature/RESTApi.php` -ből származtatott test classoknál csak az örökölt property-ket kell megfelelően kitölteni
+  az egyes entitások adataival, és a `Feature/RESTApi` az adatok alapján teljeskörűen teszteli az egyes entitásokat.
+- Futtatás: `php artisan test`
 
 ### API dokumentáció
 
